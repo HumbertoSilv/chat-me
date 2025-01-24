@@ -17,4 +17,5 @@
 body {
   color: var(--foreground);
   background: var(--background);
+  background-image: url("/grid.svg")
 }
