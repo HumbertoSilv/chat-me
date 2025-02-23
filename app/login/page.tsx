@@ -1,9 +1,9 @@
 'use client'
 
+import { actionLogin } from "@/actions/login";
 import * as Input from "@/app/ui/Input";
 import Link from "next/link";
 import { useActionState } from "react";
-import { actionLogin } from "../api/login/action";
 
 export default function Login() {
   const [, action, isPending] = useActionState(actionLogin, null)
@@ -21,13 +21,13 @@ export default function Login() {
           htmlFor="username"
           className="flex flex-col font-normal text-gray-200 mb-4"
         >
-          Username
+          Seu usuário
           <Input.Root className="bg-zinc-800 rounded-full py-1">
             <Input.Control
               id="username"
               name="username"
               type="username"
-              placeholder="Sua senha..."
+              placeholder="@usuario"
               required
             />
           </Input.Root>
@@ -38,13 +38,13 @@ export default function Login() {
           htmlFor="email"
           className="flex flex-col font-normal text-gray-200"
         >
-          E-mail
+          Senha
           <Input.Root className="bg-zinc-800 rounded-full py-1">
             <Input.Control
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Seu e-mail..."
+              id="password"
+              name="password"
+              type="password"
+              placeholder="******"
               required
             />
           </Input.Root>
