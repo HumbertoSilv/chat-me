@@ -58,8 +58,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }
 
-  // Limpa a conexão ao desmontar o provider
   useEffect(() => {
+    connectWebsocket()
+
     return () => {
       if (ws.current) {
         ws.current.close()
