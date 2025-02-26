@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { isAuthenticated } from '../utils/auth';
 
 type Message = {
   userId: string
@@ -10,9 +11,10 @@ type Message = {
 }
 
 type WebSocketContextType = {
+  messages: Message[]
   connectWebsocket: () => void
   sendMessage: ({ userId, chatId, content }: { userId: string, chatId?: string, content: string }) => void
-  messages: Message[]
+  setIsLoggedIn: (isLogged: boolean) => void
 }
 
 const WebSocketContext = createContext<WebSocketContextType>({} as WebSocketContextType)
@@ -20,6 +22,7 @@ const WebSocketContext = createContext<WebSocketContextType>({} as WebSocketCont
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const ws = useRef<WebSocket | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
+  const [authenticated, setAuthenticated] = useState<boolean>(false)
 
   const connectWebsocket = () => {
     if (ws.current) {
@@ -58,18 +61,26 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }
 
+  const setIsLoggedIn = (isLogged: boolean) => {
+    setAuthenticated(isLogged)
+  }
+
   useEffect(() => {
-    connectWebsocket()
+    isAuthenticated().then((auth) => {
+      if (auth) connectWebsocket()
+    })
+
 
     return () => {
       if (ws.current) {
         ws.current.close()
       }
-    };
-  }, []);
+    }
+  }, [authenticated])
+
 
   return (
-    <WebSocketContext.Provider value={{ connectWebsocket, sendMessage, messages }}>
+    <WebSocketContext.Provider value={{ connectWebsocket, sendMessage, setIsLoggedIn, messages }}>
       {children}
     </WebSocketContext.Provider>
   );
