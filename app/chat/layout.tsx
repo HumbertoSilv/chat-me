@@ -1,42 +1,32 @@
+'use client'
+
+import { getDirectChats } from "@/actions/chats";
+import { getUserProfile } from "@/actions/user";
 import * as Input from "@/app/ui/Input";
 import { EllipsisVerticalIcon, MagnifyingGlassIcon, UserPlusIcon } from "@heroicons/react/24/outline";
-import ContactList from "../ui/ContactList";
+import { useEffect } from "react";
+import { useChats } from "../lib/context/chatContext";
+import { useUser } from "../lib/context/userContext";
+import { useWebSocket } from "../lib/context/webSocketContext";
+import ChatList from "../ui/ContactList";
 
 
-const data = {
-  contacts: [
-    {
-      user: "thomas",
-      imageProfileURL: "https://github.com/Thomas.png",
-      name: "Thomas Smith",
-      lastMessage: {
-        content: "The later submodules are also included inside the former if you want to use multiple features from the list.",
-        sentAt: new Date("2024-10-19 09:40:00"),
-      }
-    },
-    {
-      user: "jack",
-      imageProfileURL: "https://github.com/jack.png",
-      name: "Jack with",
-      lastMessage: {
-        content: "Hey there! xxxxxxxxxxxxxxxxxxxxxx",
-        sentAt: new Date("2024-10-18 09:40:00"),
-      }
-    },
-    {
-      user: "larry",
-      imageProfileURL: "https://github.com/larry.png",
-      name: "Larry Doe",
-      lastMessage: {
-        content: "What's up?",
-        sentAt: new Date("2024-10-19 22:45:00"),
-      }
-    }
-  ]
-}
 export default function Layout({ children }: {
   children: React.ReactNode
 }) {
+  const { setUser } = useUser()
+  const { setChats, chats } = useChats()
+  const { setIsLoggedIn } = useWebSocket()
+
+  useEffect(() => {
+    getUserProfile().then(setUser)
+    getDirectChats().then(setChats)
+
+    return () => {
+      setIsLoggedIn(true)
+    }
+  }, [])
+
   return (
     <div className="bg-black pb-36 h-screen">
       <header className="fixed top-0 px-5 pt-4 flex w-full flex-col bg-black">
@@ -55,7 +45,7 @@ export default function Layout({ children }: {
           </div>
         </div>
 
-        <Input.Root className="bg-zinc-700/40 py-0 rounded-full">
+        <Input.Root className="bg-zinc-700/40 rounded-full">
           <Input.Prefix>
             <MagnifyingGlassIcon className="size-4" />
           </Input.Prefix>
@@ -72,7 +62,7 @@ export default function Layout({ children }: {
         </div>
       </header>
 
-      <ContactList contacts={data.contacts} />
+      <ChatList chats={chats} />
 
       <main>{children}</main>
     </div>
