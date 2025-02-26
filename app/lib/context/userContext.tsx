@@ -21,14 +21,16 @@ type JWT = {
 type IUserPublic = Omit<IUser, 'userId'>
 
 type UserContextType = {
-  setUser: (data: IUserPublic) => void
+  isLoggedIn: boolean
   user: IUser
+  setUser: (data: IUserPublic) => void
 }
 
 
 const UserContext = createContext<UserContextType>({} as UserContextType)
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
   const [user, setUserState] = useState<IUser>({
     userId: '',
     username: '',
@@ -40,10 +42,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const decoded = jwt.decode(token) as JWT
 
     setUserState({ ...data, userId: decoded.sub })
+    setIsLoggedIn(true)
   }
 
   return (
-    <UserContext.Provider value={{ setUser, user }}>
+    <UserContext.Provider value={{ setUser, user, isLoggedIn }}>
       {children}
     </UserContext.Provider>
   );
