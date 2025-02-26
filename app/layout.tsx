@@ -1,6 +1,9 @@
 import '@/app/ui/globals.css';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ChatsProvider } from './lib/context/chatContext';
+import { UserProvider } from './lib/context/userContext';
+import { WebSocketProvider } from './lib/context/webSocketContext';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +30,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased text-gray-400`}
       >
-        {children}
+        <UserProvider>
+          <ChatsProvider>
+            <WebSocketProvider>
+              {children}
+            </WebSocketProvider>
+          </ChatsProvider>
+        </UserProvider>
       </body>
     </html>
   );
