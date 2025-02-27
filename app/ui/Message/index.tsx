@@ -1,5 +1,5 @@
-import { ComponentProps } from 'react'
-import { tv, VariantProps } from 'tailwind-variants'
+import { ComponentProps } from 'react';
+import { tv, VariantProps } from 'tailwind-variants';
 
 const messageContainer = tv({
   base: [
@@ -18,8 +18,9 @@ const messageContainer = tv({
 
 interface MessagePayload {
   message: {
-    content: string
-    sentAt: Date
+    userId: string;
+    content: string;
+    timestamp: string;
   }
 }
 

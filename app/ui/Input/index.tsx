@@ -22,7 +22,7 @@ export function Error({ error }: InputErrorProps) {
 export function Control(props: InputControlProps) {
   return (
     <input
-      className="flex-1 p-2 bg-transparent outline-none font-medium"
+      className="flex-1 p-2 bg-transparent outline-none font-medium text-sm"
       {...props}
     />
   )
@@ -32,7 +32,7 @@ export function Root({ className, ...props }: InputRootProps) {
   return (
     <div
       className={twMerge(
-        "flex w-full items-center gap-2 px-4 py-2 mt-4 rounded-2xl border border-gray-700",
+        "flex w-full items-center gap-2 px-4 mt-4 rounded-2xl border border-gray-700",
         className)}
       {...props}
     />
