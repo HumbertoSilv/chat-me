@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { useChats } from "../lib/context/chatContext";
 import { useUser } from "../lib/context/userContext";
 import { useWebSocket } from "../lib/context/webSocketContext";
-import ChatList from "../ui/ContactList";
+import ChatList from "../ui/ChatList";
 
 
 export default function Layout({ children }: {

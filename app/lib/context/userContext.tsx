@@ -18,7 +18,7 @@ type JWT = {
   exp: number
 }
 
-type IUserPublic = Omit<IUser, 'userId'>
+export type IUserPublic = Omit<IUser, 'userId'>
 
 type UserContextType = {
   isLoggedIn: boolean
