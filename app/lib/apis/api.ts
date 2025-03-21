@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { IUserPublic } from "../context/userContext";
 
 
 interface ILogin {
@@ -6,18 +7,18 @@ interface ILogin {
   password: string
 }
 
+interface IMessage {
+  id: string
+  content: string
+  created_at: string
+  updated_at?: string
+}
+
 interface IChatsResponse {
   id: string
   chat_type: string
-  users: [
-    {
-      username: string
-      email: string
-      name?: string
-      avatar_url?: string
-    }
-  ],
-  messages: []
+  users: IUserPublic[]
+  last_message: IMessage
 }
 
 interface ProfileResponse {

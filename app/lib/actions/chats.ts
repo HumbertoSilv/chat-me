@@ -9,7 +9,13 @@ export const getDirectChats = async () => {
     {
       chatId: chat.id,
       chatType: chat.chat_type,
-      users: chat.users
+      users: chat.users,
+      lastMessage: {
+        id: chat.last_message.id,
+        content: chat.last_message.content,
+        createdAt: chat.last_message.created_at,
+        updatedAt: chat.last_message?.updated_at
+      }
     }
   ))
 
