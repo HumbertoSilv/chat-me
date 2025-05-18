@@ -1,12 +1,6 @@
 import { cookies } from "next/headers";
 import { IUserPublic } from "../context/userContext";
 
-
-interface ILogin {
-  username: string
-  password: string
-}
-
 interface IMessage {
   id: string
   content: string
@@ -28,34 +22,36 @@ interface ProfileResponse {
   avatar_url?: string
 }
 
+interface AccessTokenResponse {
+  access_token: string
+  token_type: string
+}
 
-export async function login({ username, password }: ILogin): Promise<void> {
-  const formData = new URLSearchParams()
-  formData.append("username", username)
-  formData.append("password", password)
 
-  const response = await fetch(
-    'http://localhost:8000/auth/login', // TODO: set URL in ENV
-    {
-      method: 'POST',
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: formData.toString(),
-    })
+export async function createAccessTokenReq(IDToken: string): Promise<AccessTokenResponse> {
+  try {
+    const response = await fetch(
+      'http://localhost:8000/auth/create-access-token', // TODO: set URL in ENV
+      {
+        method: 'POST',
+        headers: {
+          'Accept': "application/json",
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id_token: IDToken }),
+      }
+    );
 
-  const token = await response.json()
-  const cookieStore = await cookies()
+    if (!response.ok) {
+      throw new Error(`Erro ao criar access token: ${response.status}`);
+    }
 
-  cookieStore.set({
-    name: 'access_token',
-    value: token.access_token,
-    httpOnly: true,
-    path: '/',
-    sameSite: 'none',
-    secure: true
-  })
+    const token = await response.json()
+    return token
+
+  } catch (error) {
+    throw error
+  }
 }
 
 export async function getUserProfileReq(): Promise<ProfileResponse> {
@@ -75,6 +71,29 @@ export async function getUserProfileReq(): Promise<ProfileResponse> {
 
   const userInfos = await response.json()
 
+  return userInfos
+}
+
+export async function searchUsersReq(username?: string): Promise<ProfileResponse[]> {
+  const searchParams = new URLSearchParams()
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get('access_token')
+
+  if (username) {
+    searchParams.append('username', username)
+  }
+
+  const response = await fetch(
+    `http://localhost:8000/users/search?${searchParams.toString()}`,  // TODO: set URL in ENV
+    {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken?.value}`,
+        'Accept': 'application/json',
+      },
+    }
+  )
+  const userInfos = await response.json()
   return userInfos
 }
 
